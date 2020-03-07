@@ -22,7 +22,7 @@ import java.util.Calendar
 /**
  * Type converters to allow Room to reference complex data types.
  */
-class Converters {
+class Converters {//TypeConverters
     @TypeConverter fun calendarToDatestamp(calendar: Calendar): Long = calendar.timeInMillis
 
     @TypeConverter fun datestampToCalendar(value: Long): Calendar =

@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import com.android.myapplication.databinding.FragmentHomeBinding
 import com.android.myapplication.util.InjectorUtils
 import com.android.myapplication.viewmodel.HomeViewModel
+import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment() {
     private val TAG: String = HomeFragment::class.java.name
