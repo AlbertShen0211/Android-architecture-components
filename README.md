@@ -28,7 +28,7 @@ NavController在 NavHost 中管理应用导航的对象，沿导航图中的特�
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
 
-<action
+           <action
             android:id="@+id/action_navigation_home_to_detail_activity"
             app:destination="@id/detail_activity" />
     </fragment>
