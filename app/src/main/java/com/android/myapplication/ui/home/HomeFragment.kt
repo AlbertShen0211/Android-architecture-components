@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         })
 
         homeViewModel.err.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(activity, "err" + it, Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, "error : " + it, Toast.LENGTH_LONG).show()
         })
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         return binding.root
