@@ -1,8 +1,7 @@
 package com.android.myapplication.data
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.android.myapplication.network.MainNetwork
 import kotlinx.coroutines.withTimeout
+import timber.log.Timber
 
 class HomeRepository private constructor(
     val network: MainNetwork,
@@ -24,12 +23,25 @@ class HomeRepository private constructor(
     suspend fun refreshView(): String {
         try {
             val result = withTimeout(50_00) {
-                network.fetchNextTitle()
+               network.fetchNextTitle()
             }
             createGardenPlanting(result)
             return result
         } catch (error: Throwable) {
             throw RefreshError("Unable to refresh title", error)
+        }
+    }
+
+    suspend fun getBanner(): Response<List<Banner>>{
+        try {
+
+            return withTimeout(50_00) {
+                Timber.e("respo getBanner")
+                network.getBanner()
+            }
+        } catch (error: Throwable) {
+            Timber.e( "err-- "+error.message)
+            throw RefreshError("Unable to refresh title ->", error)
         }
     }
 

@@ -1,22 +1,24 @@
 package com.android.myapplication.network
+
 import com.google.gson.Gson
 import okhttp3.*
+import timber.log.Timber
 
 /**
  * A list of fake results to return.
  */
 private val FAKE_RESULTS = listOf(
-        "Apple",
-        "Beet",
-        "Grape",
-        "Orange",
-        "Pear"
+    "Apple",
+    "Beet",
+    "Grape",
+    "Orange",
+    "Pear"
 )
 
 /**
  * This class will return fake [Response] objects to Retrofit, without actually using the network.
  */
-class SkipNetworkInterceptor : Interceptor {
+class NetworkInterceptor() : Interceptor {
     private var lastResult: String = ""
     val gson = Gson()
 
@@ -31,22 +33,14 @@ class SkipNetworkInterceptor : Interceptor {
      * Stop the request from actually going out to the network.
      */
     override fun intercept(chain: Interceptor.Chain): Response {
-        pretendToBlockForNetworkRequest()
         val wantRandomError = wantRandomError()
-
         return if (wantRandomError) {
             makeErrorResult(chain.request())
         } else {
-            makeOkResult(chain.request())
+            makeOkResult(chain, chain.request())
         }
     }
 
-    /**
-     * Pretend to "block" interacting with the network.
-     *
-     * Really: sleep for 500ms.
-     */
-    private fun pretendToBlockForNetworkRequest() = Thread.sleep(500)
 
     /**
      * Generate an error result.
@@ -60,14 +54,17 @@ class SkipNetworkInterceptor : Interceptor {
      */
     private fun makeErrorResult(request: Request): Response {
         return Response.Builder()
-                .code(500)
-                .request(request)
-                .protocol(Protocol.HTTP_1_1)
-                .message("Bad server day")
-                .body(ResponseBody.create(
-                        MediaType.get("application/json"),
-                        gson.toJson(mapOf("cause" to "not sure"))))
-                .build()
+            .code(500)
+            .request(request)
+            .protocol(Protocol.HTTP_1_1)
+            .message("Bad server day")
+            .body(
+                ResponseBody.create(
+                    MediaType.get("application/json"),
+                    gson.toJson(mapOf("cause" to "not sure"))
+                )
+            )
+            .build()
     }
 
     /**
@@ -80,20 +77,27 @@ class SkipNetworkInterceptor : Interceptor {
      * "$random_string"
      * ```
      */
-    private fun makeOkResult(request: Request): Response {
+    private fun makeOkResult(chain: Interceptor.Chain, request: Request): Response {
+        val url = chain.request().url().toString()
+        if (url.contains("banner"))
+            return chain.proceed(request)
         var nextResult = lastResult
         while (nextResult == lastResult) {
             nextResult = FAKE_RESULTS.random()
         }
         lastResult = nextResult
+
         return Response.Builder()
-                .code(200)
-                .request(request)
-                .protocol(Protocol.HTTP_1_1)
-                .message("OK")
-                .body(ResponseBody.create(
-                        MediaType.get("application/json"),
-                        gson.toJson(nextResult)))
-                .build()
+            .code(200)
+            .request(request)
+            .protocol(Protocol.HTTP_1_1)
+            .message("OK")
+            .body(
+                ResponseBody.create(
+                    MediaType.get("application/json"),
+                    gson.toJson(nextResult)
+                )
+            )
+            .build()
     }
 }

@@ -14,6 +14,7 @@ import com.android.myapplication.databinding.FragmentHomeBinding
 import com.android.myapplication.util.InjectorUtils
 import com.android.myapplication.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_home.*
+import timber.log.Timber
 
 class HomeFragment : Fragment() {
     private val TAG: String = HomeFragment::class.java.name
@@ -34,10 +35,20 @@ class HomeFragment : Fragment() {
             navigateToDetailPage("1", it)
         }
 
+        binding.tvHttp.setOnClickListener {
+            homeViewModel.getBanner()
+        }
+
         binding.rootLayout.setOnClickListener {
             homeViewModel.onHomeViewClicked()
         }
 
+
+        homeViewModel.banners.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(this.context, it[0].title, Toast.LENGTH_LONG).show()
+
+            //Timber.e("result-> "+banner.title)
+        })
 
         homeViewModel.err.observe(viewLifecycleOwner, Observer {
             Toast.makeText(activity, "err" + it, Toast.LENGTH_LONG).show()

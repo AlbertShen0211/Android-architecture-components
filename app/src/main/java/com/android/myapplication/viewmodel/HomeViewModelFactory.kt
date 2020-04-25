@@ -15,7 +15,7 @@ class HomeViewModelFactory(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        Timber.e("HomeViewModelFactory","gen ViewModel:"+modelClass.simpleName)
+        //Timber.e("HomeViewModelFactory","gen ViewModel:"+modelClass.simpleName)
         return HomeViewModel(repository) as T
     }
 }
